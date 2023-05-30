@@ -8,7 +8,7 @@ setup(
     install_requires=[
         'fairseq',
         'streamlit',
-        'ipython==7.29.0'
+        'ipython'
     ],
     entry_points={
         'console_scripts': [
