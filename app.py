@@ -1,27 +1,31 @@
 import streamlit as st
 import torch
-from transformers import Tacotron2ForTextToSpeech, Tacotron2Processor
+from transformers import T5Tokenizer, T5ForConditionalGeneration
 from pydub import AudioSegment
 
 def generate_audio(text):
-    # Load Tacotron2 model and processor
-    processor = Tacotron2Processor.from_pretrained("tugstugi/tacotron2")
-    model = Tacotron2ForTextToSpeech.from_pretrained("tugstugi/tacotron2")
+    # Load T5 model and tokenizer
+    tokenizer = T5Tokenizer.from_pretrained("t5-base")
+    model = T5ForConditionalGeneration.from_pretrained("t5-base")
+
+    # Encode the input text
+    input_ids = tokenizer.encode(text, return_tensors="pt")
 
     # Generate speech from text
-    inputs = processor(text, return_tensors="pt", padding=True)
     with torch.no_grad():
-        wav = model.generate(inputs["input_ids"], inputs["attention_mask"])
+        outputs = model.generate(input_ids)
     
-    return wav
+    return outputs
 
 def main():
     st.title("Text-to-Speech Demo")
     text = st.text_input("Enter text")
 
     if st.button("Generate Audio"):
-        wav = generate_audio(text)
-        audio = AudioSegment.from_wav(wav.tostring())
+        outputs = generate_audio(text)
+
+        # Convert the generated IDs to audio
+        audio = AudioSegment.from_wav(outputs.tostring())
 
         # Save the audio to a file
         audio.export("output.wav", format="wav")
