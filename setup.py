@@ -5,15 +5,10 @@ setup(
     version='1.0',
     packages=find_packages(),
     install_requires=[
+        'transformers',
+        'torch',
+        'soundfile',
         'streamlit',
-        'fairseq',
-        'huggingface_hub',
-        'IPython',
-        'tensorboardX',
+        'datasets',
     ],
-    entry_points={
-        'console_scripts': [
-            'txt-audio = app:main',
-        ],
-    },
 )
