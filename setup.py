@@ -9,6 +9,7 @@ setup(
         'fairseq',
         'huggingface_hub',
         'IPython',
+        'tensorboardX',
     ],
     entry_points={
         'console_scripts': [
