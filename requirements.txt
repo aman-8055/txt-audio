@@ -2,4 +2,4 @@ streamlit
 fairseq
 huggingface_hub
 IPython
-
+tensorboardX
