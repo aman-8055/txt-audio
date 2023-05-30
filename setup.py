@@ -15,4 +15,13 @@ setup(
             'txt-audio=app:main',
         ],
     },
+    setup_requires=[
+        'numpy',
+        'Cython',
+    ],
+    extras_require={
+        'dev': [
+            'pytest',
+        ],
+    },
 )
