@@ -1,26 +1,31 @@
 import streamlit as st
 import torch
 import soundfile as sf
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+from transformers import AutoTokenizer, AutoModelForTextToSpeech
 
-tokenizer = T5Tokenizer.from_pretrained("t5-base")
-model = T5ForConditionalGeneration.from_pretrained("t5-base")
+# Load tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained("tts_models/ljspeech")
+model = AutoModelForTextToSpeech.from_pretrained("tts_models/ljspeech")
 
 def generate_audio(text):
-    inputs = tokenizer.encode(text, return_tensors="pt")
-    outputs = model.generate(inputs)
-    speech = outputs[0].numpy()
-    return speech
+    # Encode input text
+    input_ids = tokenizer.encode(text, return_tensors="pt")
+
+    # Generate audio
+    with torch.no_grad():
+        output = model.generate(input_ids)
+
+    # Save audio to file
+    audio = output[0].numpy()
+    sf.write("output.wav", audio, samplerate=22050)
 
 def main():
     st.title("Text-to-Speech Demo")
     text = st.text_input("Enter text")
 
     if st.button("Generate Audio"):
-        wav = generate_audio(text)
-        sf.write("speech.wav", wav, samplerate=22050)
-        st.success("Audio generated successfully. You can download it below.")
-        st.audio("speech.wav")
+        generate_audio(text)
+        st.audio("output.wav")
 
 if __name__ == "__main__":
     main()
