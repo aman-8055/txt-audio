@@ -1,5 +1,5 @@
+transformers
+torch
+soundfile
 streamlit
-fairseq
-huggingface_hub
-IPython
-tensorboardX
+datasets
