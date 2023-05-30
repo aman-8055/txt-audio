@@ -1,31 +1,32 @@
 import streamlit as st
-from fairseq.checkpoint_utils import load_model_ensemble_and_task_from_hf_hub
-from fairseq.models.text_to_speech.hub_interface import TTSHubInterface
-import IPython.display as ipd
+from transformers import Tacotron2ForTextToSpeech, Tacotron2Processor
+import torch
+import soundfile as sf
 
-def generate_audio(text):
-    models, cfg, task = load_model_ensemble_and_task_from_hf_hub(
-        "facebook/fastspeech2-en-ljspeech",
-        arg_overrides={"vocoder": "hifigan", "fp16": False}
-    )
-    model = models[0]
-    if isinstance(model, TTSHubInterface):
-        model = model.base_model
-    TTSHubInterface.update_cfg_with_data_cfg(cfg, task.data_cfg)
-    generator = task.build_generator(model, cfg)
+@st.cache(allow_output_mutation=True)
+def load_model():
+    processor = Tacotron2Processor.from_pretrained("tugstugi/tacotron2")
+    model = Tacotron2ForTextToSpeech.from_pretrained("tugstugi/tacotron2")
+    return processor, model
 
-    sample = TTSHubInterface.get_model_input(task, text)
-    wav, rate = TTSHubInterface.get_prediction(task, model, generator, sample)
-
-    return wav, rate
+def generate_speech(text, processor, model):
+    inputs = processor(text, return_tensors="pt")
+    with torch.no_grad():
+        model.eval()
+        speech = model.generate(inputs.input_ids)
+    return speech[0].numpy()
 
 def main():
     st.title("Text-to-Speech Demo")
     text = st.text_input("Enter text")
 
+    # Load the model
+    processor, model = load_model()
+
     if st.button("Generate Audio"):
-        wav, rate = generate_audio(text)
-        st.audio(wav, format="audio/wav", start_time=0)
+        speech = generate_speech(text, processor, model)
+        sf.write("speech.wav", speech, samplerate=22050)
+        st.audio("speech.wav", format="audio/wav")
 
 if __name__ == "__main__":
     main()
