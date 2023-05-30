@@ -8,6 +8,7 @@ setup(
         'streamlit',
         'torch',
         'transformers',
+        'sentencepiece',
         'pydub',
     ],
     entry_points={
