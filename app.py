@@ -9,6 +9,8 @@ def generate_audio(text):
         arg_overrides={"vocoder": "hifigan", "fp16": False}
     )
     model = models[0]
+    if isinstance(model, TTSHubInterface):
+        model = model.base_model
     TTSHubInterface.update_cfg_with_data_cfg(cfg, task.data_cfg)
     generator = task.build_generator(model, cfg)
 
