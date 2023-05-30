@@ -2,13 +2,17 @@ from setuptools import setup, find_packages
 
 setup(
     name='txt-audio',
-    version='1.0',
+    version='0.1',
     packages=find_packages(),
     install_requires=[
-        'transformers==4.12.0',
-        'torch',
-        'soundfile',
-        'streamlit',
-        'datasets',
+        'streamlit==0.85.1',
+        'torch==1.9.0',
+        'soundfile==0.10.3.post1',
+        'transformers==4.10.3',
     ],
+    entry_points={
+        'console_scripts': [
+            'txt-audio=app:main',
+        ],
+    },
 )
