@@ -6,8 +6,8 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'fairseq==0.10.2',
-        'streamlit==0.89.0',
+        'fairseq',
+        'streamlit',
         'ipython==7.29.0'
     ],
     entry_points={
