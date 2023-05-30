@@ -2,3 +2,4 @@ pydub
 streamlit
 torch
 transformers
+sentencepiece
